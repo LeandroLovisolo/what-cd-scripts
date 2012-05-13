@@ -13,14 +13,14 @@ user = ''
 password = ''
 
 
-def getLogin(username, password):
+def getLogin():
     ''' Logs in to what.cd and gets a cookie
         opener is returned and should be used to open other pages '''
 
     v_print('Logging you in as ' + user + '.')
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    login_data = urllib.urlencode({'username': username,
+    login_data = urllib.urlencode({'username': user,
                                    'password': password})
     check = opener.open('http://what.cd/login.php', login_data)
     soup = BeautifulSoup(check.read())
@@ -109,9 +109,7 @@ def usage():
 
 
 def run():
-    global user
-    global password
-    login = getLogin(user, password)
+    login = getLogin()
     torrents, size = freeleechTorrents(login)
     count = 0
 

@@ -10,7 +10,7 @@ Currently far from perfect. Thinking of adding multithreading to the download ph
     Usage: freeleech.py [OPTION]
     What.CD freeleech downloader
 
-     -l/--login user:password, override default login
+    -l/--login user:password, override default login
     -q/--quiet go silent
     -h/--help this message
     ==================================================

@@ -48,7 +48,7 @@ def getContent(url, login):
         line = handler.readline()
         if 'href' in line and '>DL</a>' in line:
             content.append('http://what.cd/' + getUrl(line)[:-1])
-        if 'nobr' in line and '(Max)' in line:
+        if 'nobr' in line and 'B</td>' in line:
             tmp = getSize(line)
             tmp = tmp.split()
             if tmp[1] == 'MB':

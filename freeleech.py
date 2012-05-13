@@ -113,8 +113,8 @@ def run():
     torrents, size = freeleechTorrents(login)
     count = 0
 
-    v_print(str(len(torrents)) + ' torrents available for download')
-    v_print('total size: ' + str(size) + 'GB\n')
+    print str(len(torrents)), 'torrents available for download'
+    print'total size:', size, 'GB\n'
 
     c = raw_input("Proceed? y/n\n")
 

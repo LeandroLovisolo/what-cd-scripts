@@ -1,4 +1,5 @@
 import re
+import os
 import sys
 import urllib
 import urllib2
@@ -17,7 +18,7 @@ def getLogin():
     ''' Logs in to what.cd and gets a cookie
         opener is returned and should be used to open other pages '''
 
-    v_print('Logging you in as ' + user + '.')
+    vPrint('Logging you in as ' + user + '.')
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     login_data = urllib.urlencode({'username': user,
@@ -28,7 +29,7 @@ def getLogin():
     if warning:
         exit('Username or password is incorrect.')
 
-    v_print('Login successful.')
+    vPrint('Login successful.')
 
     return opener
 
@@ -81,30 +82,44 @@ def freeleechTorrents(login):
     return list(chain.from_iterable(torrents)), size
 
 
+def genFilename(filename):
+    ''' Generates a filename from the old one '''
+    count = 1
+    ext = '.torrent'
+    name = re.sub(ext, '', filename)
+    while os.path.isfile(filename):
+        filename = name + ' (' + str(count) + ')' + ext
+        count += 1
+
+    return filename
+
+
 def download(torrent, login):
     ''' Downloads the torrent to the current folder '''
     handler = login.open(torrent)
     filename = re.sub('.*="', '', handler.headers['content-disposition'])[:-1]
+    if os.path.isfile(filename):
+        filename = genFilename(filename)
     f = open(filename, 'wb')
     f.write(handler.read())
     f.close()
 
 
-def v_print(instr):
+def vPrint(instr):
     ''' Verbose Print '''
     if verbose:
         print instr
 
 
 def usage():
-    v_print("==================================================")
-    v_print("Usage: freeleech.py [OPTION]")
-    v_print("What.CD freeleech downloader")
-    v_print("")
-    v_print(" -l/--login user:password, override default login")
-    v_print(" -q/--quiet go silent")
-    v_print(" -h/--help this message")
-    v_print("==================================================")
+    vPrint("==================================================")
+    vPrint("Usage: freeleech.py [OPTION]")
+    vPrint("What.CD freeleech downloader")
+    vPrint("")
+    vPrint(" -l/--login user:password, override default login")
+    vPrint(" -q/--quiet go silent")
+    vPrint(" -h/--help this message")
+    vPrint("==================================================")
     sys.exit(' ')
 
 

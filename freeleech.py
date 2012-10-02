@@ -23,7 +23,7 @@ def getLogin():
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     login_data = urllib.urlencode({'username': user,
                                    'password': password})
-    check = opener.open('http://what.cd/login.php', login_data)
+    check = opener.open('https://what.cd/login.php', login_data)
     soup = BeautifulSoup(check.read())
     warning = soup.find('span', 'warning')
     if warning:

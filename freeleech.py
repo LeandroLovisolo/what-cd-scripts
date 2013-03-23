@@ -5,6 +5,8 @@ import urllib
 import urllib2
 import getopt
 import cookielib
+import gevent
+from gevent import monkey
 from BeautifulSoup import BeautifulSoup
 from itertools import chain
 
@@ -100,9 +102,15 @@ def download(torrent, login):
     filename = re.sub('.*="', '', handler.headers['content-disposition'])[:-1]
     if os.path.isfile(filename):
         filename = genFilename(filename)
-    f = open(filename, 'wb')
-    f.write(handler.read())
-    f.close()
+    try:
+        f = open(filename, 'wb')
+        f.write(handler.read())
+        f.close()
+    except IOError as e:
+        print 'I/O error({0}): {1} - {2}\n'.format(e.errno, e.strerror, filename)
+    except:
+        print 'Unexpected error:', sys.exc_info()[0]
+        raise
 
 
 def vPrint(instr):
@@ -137,11 +145,10 @@ def run():
         if verbose:
             print '\nStarting downloads.'
             total = len(torrents)
-        for i in torrents:
-            download(i, login)
-            if verbose:
-                count += 1
-                print count, 'of', total
+        jobs = [gevent.spawn(download, i, login) for i in torrents]
+        gevent.joinall(jobs)
+        if verbose:
+            print '\nDone!'
 
 
 def main():
@@ -171,4 +178,5 @@ def main():
 
 
 if __name__ == "__main__":
+    monkey.patch_all()
     main()

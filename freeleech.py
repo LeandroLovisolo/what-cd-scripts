@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import re
 import os
 import sys
@@ -76,8 +78,11 @@ def freeleechTorrents(login):
     ''' Gets all of the freeleeech torrents and returns them in a list '''
     torrents = list()
     size = 0
-    for i in range(1, 4):
-        t, tSize = getContent(freeleechUrl(i), login)
+
+    jobs = [gevent.spawn(getContent, freeleechUrl(i), login) for i in range(1, 4)]
+    gevent.joinall(jobs)
+    for j in jobs:
+        t, tSize = j.value
         torrents.append(t)
         size += tSize
 
@@ -134,7 +139,6 @@ def usage():
 def run():
     login = getLogin()
     torrents, size = freeleechTorrents(login)
-    count = 0
 
     print str(len(torrents)), 'torrents available for download'
     print'total size:', size, 'GB\n'
@@ -142,13 +146,10 @@ def run():
     c = raw_input("Proceed? y/n\n")
 
     if c == 'y' or c == 'Y':
-        if verbose:
-            print '\nStarting downloads.'
-            total = len(torrents)
+        vPrint('\nStarting downloads.')
         jobs = [gevent.spawn(download, i, login) for i in torrents]
         gevent.joinall(jobs)
-        if verbose:
-            print '\nDone!'
+        vPrint('\nDone!')
 
 
 def main():

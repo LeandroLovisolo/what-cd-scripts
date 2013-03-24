@@ -2,7 +2,9 @@
 
 `freeleech.py` - Downloads all current freeleech torrents from What.CD
 
-Requirements: BeautifulSoup
+Requirements:
+- BeautifulSoup
+- gEvent
 
 Currently far from perfect. Thinking of adding multithreading to the download phase but have no idea on how that might turn out, also want to make it figure out how many pages there currently are by itself.
 

@@ -57,9 +57,9 @@ def getContent(url, login):
             tmp = getSize(line)
             tmp = tmp.split()
             if tmp[1] == 'MB':
-                size += float(tmp[0]) * MB_TO_GB
+                size += float(tmp[0].replace(',', '')) * MB_TO_GB
             else:
-                size += float(tmp[0])
+                size += float(tmp[0].replace(',', ''))
 
     return content, size
 
